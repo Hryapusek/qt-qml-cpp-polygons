@@ -77,5 +77,8 @@ target_sources(PolygonsMap
     include/public/shapes/PolygonItem.h
     src/shapes/PolygonItem.cpp
 
+    include/public/models/PolygonPointModel.h
+    src/model/PolygonPointModel.cpp
+
     src/main.cpp
     )

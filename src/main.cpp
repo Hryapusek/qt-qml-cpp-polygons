@@ -7,12 +7,14 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-
+#include <QTableView>
+#include <QSplitter>
 
 #include "shapes/DraggableEllipse.h"
 #include "shapes/PolygonBuilder.h"
 #include "shapes/PolygonItem.h"
 
+#include "models/PolygonPointModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,68 +34,59 @@ int main(int argc, char *argv[])
     QWidget window;
     QVBoxLayout layout(&window);
 
+    // Create a splitter to separate the view and the table
+    QSplitter *splitter = new QSplitter;
+
     // Create the scene and view
     QGraphicsScene *scene = new QGraphicsScene(0, 0, 400, 400);
     QGraphicsView *view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing);
 
-    // Add the view to the layout
-    layout.addWidget(view);
+    // Add the view to the splitter
+    splitter->addWidget(view);
 
-    // Create PolygonBuilder
-    PolygonBuilder *builder = new PolygonBuilder(scene);
-    builder->setRect(scene->sceneRect());
+    // Create a table view and model for editing polygon points
+    QTableView *tableView = new QTableView();
+    PolygonPointModel *model = new PolygonPointModel();
+    tableView->setModel(model);
 
-    // Add toggle button
-    QPushButton *toggleBuilderButton = new QPushButton("Toggle Polygon Builder");
-    layout.addWidget(toggleBuilderButton);
+    // Add the table view to the splitter
+    splitter->addWidget(tableView);
 
-    // Variable to keep track of builder state
-    bool builderEnabled = true;
-    scene->addItem(builder);
+    // Add the splitter to the layout
+    layout.addWidget(splitter);
 
-    QObject::connect(toggleBuilderButton, &QPushButton::clicked, [&]() {
-        if (builderEnabled && builder) {
-            scene->removeItem(builder);
-        } else {
-            builder = new PolygonBuilder(scene); 
-            scene->addItem(builder);
-        }
-        builderEnabled = !builderEnabled;
+    // Create a polygon
+    QPolygonF polygon;
+    polygon << QPointF(100, 100) << QPointF(200, 100) << QPointF(150, 200);
+
+    // Create a PolygonItem and add it to the scene
+    PolygonItem *polygonItem = new PolygonItem();
+    polygonItem->setPolygon(polygon);
+    scene->addItem(polygonItem);
+
+    // Set the initial polygon in the model
+    model->setPolygon(polygon);
+
+    // Connect polygon item selection to the model
+    QObject::connect(polygonItem, &PolygonItem::polygonSelectedInScene, model, &PolygonPointModel::setPolygon);
+
+    // Connect point updates from polygon item to the model
+    QObject::connect(polygonItem, &PolygonItem::pointUpdatedInScene, model, &PolygonPointModel::updatePoint);
+
+    // Connect polygon movement to update the model
+    QObject::connect(polygonItem, &PolygonItem::polygonMovedInScene, [model](const QPolygonF &polygon) {
+        model->setPolygon(polygon);
     });
 
-    // Connect the polygonCreated signal to the slot that adds the polygon to the scene
-    QObject::connect(builder, &PolygonBuilder::polygonCreated, [&](QPolygonF newPolygon) {
-        PolygonItem *polygonItem = new PolygonItem();
-        polygonItem->setPolygon(newPolygon);
-        scene->addItem(polygonItem);
-        builder->deleteLater();
-        builder = nullptr;
-        qDebug() << "Polygon created with points:" << newPolygon;
-    });
-
-    // Create a button to allow creating new polygons
-    QPushButton *createPolygonButton = new QPushButton("Create New Polygon");
-    layout.addWidget(createPolygonButton);
-
-    // Connect the button click to reset the builder for a new polygon
-    QObject::connect(createPolygonButton, &QPushButton::clicked, [&]() {
-        builder = new PolygonBuilder(scene);
-        builder->setRect(scene->sceneRect());
-        scene->addItem(builder);
-        QObject::connect(builder, &PolygonBuilder::polygonCreated, [&](QPolygonF newPolygon) mutable {
-            PolygonItem *polygonItem = new PolygonItem();
-            polygonItem->setPolygon(newPolygon);
-            scene->addItem(polygonItem);
-            builder->deleteLater();
-            builder = nullptr;
-            qDebug() << "Polygon created with points:" << newPolygon;
-        });
+    // Connect point updates in the model to the polygon item
+    QObject::connect(model, &PolygonPointModel::pointUpdated, [polygonItem](int index, const QPointF &newPos) {
+        polygonItem->updateBothPointsInScene(index, newPos);
     });
 
     // Set up and show the main window
     window.setLayout(&layout);
-    window.resize(400, 450);
+    window.resize(600, 600);
     window.show();
 
     return qapp.exec();

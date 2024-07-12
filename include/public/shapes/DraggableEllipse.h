@@ -15,6 +15,7 @@ public:
 
 signals:
     void pointMoved(int pointIndex, QPointF newPos);
+    void pointMovedInScene(int pointIndex, QPointF newPos);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;

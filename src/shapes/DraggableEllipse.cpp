@@ -15,6 +15,7 @@ QVariant DraggableEllipse::itemChange(GraphicsItemChange change, const QVariant 
         QPointF newPos = value.toPointF();
         qDebug() << "Draggable point" << pointIndex << "moved to" << newPos;
         emit pointMoved(pointIndex, newPos);
+        emit pointMovedInScene(pointIndex, mapToScene(newPos)); // Scene coordinates
     }
     return QGraphicsEllipseItem::itemChange(change, value);
 }
