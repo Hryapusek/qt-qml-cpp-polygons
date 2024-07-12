@@ -16,6 +16,9 @@
 
 #include "models/PolygonPointModel.h"
 
+#include "scene/CustomGraphicsScene.h"
+#include "view/CustomGraphicsView.h"
+
 int main(int argc, char *argv[])
 {
     // QQmlApplicationEngine engine;
@@ -38,8 +41,10 @@ int main(int argc, char *argv[])
     QSplitter *splitter = new QSplitter;
 
     // Create the scene and view
-    QGraphicsScene *scene = new QGraphicsScene(0, 0, 400, 400);
-    QGraphicsView *view = new QGraphicsView(scene);
+    CustomGraphicsScene *scene = new CustomGraphicsScene();
+    scene->setSceneRect(0, 0, 400, 400);
+    CustomGraphicsView *view = new CustomGraphicsView(scene);
+    view->setRenderHint(QPainter::Antialiasing);
     view->setRenderHint(QPainter::Antialiasing);
 
     // Add the view to the splitter

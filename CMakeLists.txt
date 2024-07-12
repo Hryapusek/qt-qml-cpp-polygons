@@ -80,5 +80,11 @@ target_sources(PolygonsMap
     include/public/models/PolygonPointModel.h
     src/model/PolygonPointModel.cpp
 
+    include/public/scene/CustomGraphicsScene.h
+    src/scene/CustomGraphicsScene.cpp
+
+    include/public/view/CustomGraphicsView.h
+    src/view/CustomGraphicsView.cpp
+
     src/main.cpp
     )
