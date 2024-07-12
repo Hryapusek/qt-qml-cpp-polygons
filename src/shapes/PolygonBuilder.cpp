@@ -3,6 +3,8 @@
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QPen>
+#include <QKeyEvent>
+#include <QDebug>
 
 static const qreal POINT_RADIUS = 5;
 
@@ -51,4 +53,14 @@ void PolygonBuilder::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(Qt::DashLine);
         painter->drawLine(tempPoly.last(), tempPoly.first());
     }
+}
+
+void PolygonBuilder::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Escape && creatingPolygon) {
+        qDebug() << "Cancelling polygon creation";
+        creatingPolygon = false;
+        tempPoly.clear();
+        update();
+    }
+    QGraphicsRectItem::keyPressEvent(event);
 }

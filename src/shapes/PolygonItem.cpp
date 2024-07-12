@@ -1,5 +1,12 @@
 #include "shapes/PolygonItem.h"
 #include <QDebug>
+#include <QMenu>
+#include <QAction>
+#include <QGraphicsSceneEvent>
+#include <QGraphicsScene>
+#include <QApplication>
+#include <QStyle>
+
 
 PolygonItem::PolygonItem(QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent) {
@@ -47,4 +54,23 @@ void PolygonItem::updateDraggablePoint(int index, QPointF newPos) {
     } else {
         qDebug() << "Invalid draggable point index" << index;
     }
+}
+
+void PolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+    QMenu menu;
+    QAction *deleteAction = menu.addAction(qApp->style()->standardIcon(QStyle::SP_DialogCloseButton), "Delete Polygon");
+    connect(deleteAction, &QAction::triggered, this, &PolygonItem::deletePolygon);
+    menu.exec(event->screenPos());
+}
+
+void PolygonItem::deletePolygon() {
+    qDebug() << "Deleting polygon";
+    for (auto pointItem : draggablePoints) {
+        delete pointItem;
+    }
+    draggablePoints.clear();
+    if (scene()) {
+        scene()->removeItem(this);
+    }
+    delete this;
 }

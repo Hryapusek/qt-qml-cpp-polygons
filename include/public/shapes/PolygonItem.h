@@ -13,8 +13,12 @@ public:
 
     void setPolygon(const QPolygonF &polygon);
 
+protected:
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+
 private slots:
     void updatePolygonPoint(int index, QPointF newPos);
+    void deletePolygon();
 
 private:
     void createDraggablePoints();
