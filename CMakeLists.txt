@@ -68,11 +68,8 @@ target_include_directories(PolygonsMap
 target_sources(PolygonsMap
     PUBLIC
 
-    src/shapes/DraggableEllipse.cpp
     include/public/shapes/DraggableEllipse.h
-
-    include/public/shapes/PolygonBuilder.h
-    src/shapes/PolygonBuilder.cpp
+    src/shapes/DraggableEllipse.cpp
 
     include/public/shapes/PolygonItem.h
     src/shapes/PolygonItem.cpp
@@ -80,11 +77,11 @@ target_sources(PolygonsMap
     include/public/models/PolygonPointModel.h
     src/model/PolygonPointModel.cpp
 
-    include/public/scene/CustomGraphicsScene.h
-    src/scene/CustomGraphicsScene.cpp
+    include/public/scene/CustomScene.h
+    src/scene/CustomScene.cpp
 
-    include/public/view/CustomGraphicsView.h
-    src/view/CustomGraphicsView.cpp
+    include/public/scene/SceneItem.h
+    src/scene/SceneItem.cpp
 
     src/main.cpp
-    )
+)
