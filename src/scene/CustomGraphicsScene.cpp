@@ -3,12 +3,7 @@
 
 CustomGraphicsScene::CustomGraphicsScene(QObject *parent)
     : QGraphicsScene(parent) {
-}
-
-void CustomGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect) {
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
-    
-    // Always set the scene rect to start at (0, 0)
-    setSceneRect(0, 0, width(), height());
+    // Set an initial scene rect
+    setSceneRect(0, 0, 800, 600);
+    emit sceneRectChanged(sceneRect());
 }

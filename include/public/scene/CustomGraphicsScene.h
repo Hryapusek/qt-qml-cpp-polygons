@@ -10,8 +10,9 @@ class CustomGraphicsScene : public QGraphicsScene {
 public:
     CustomGraphicsScene(QObject *parent = nullptr);
 
-protected:
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
+signals:
+    void sceneRectChanged(const QRectF &rect);
+
 };
 
 #endif // CUSTOMGRAPHICSSCENE_H
