@@ -42,16 +42,18 @@ void PolygonBuilder::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     painter->setPen(Qt::black);
     painter->setBrush(Qt::NoBrush);
-    painter->drawPolyline(tempPoly);
+    if (creatingPolygon)
+    {
+        painter->drawPolyline(tempPoly);
+        painter->setBrush(Qt::red);
+        for (const QPointF &point : tempPoly) {
+            painter->drawEllipse(point, POINT_RADIUS, POINT_RADIUS);
+        }
 
-    painter->setBrush(Qt::red);
-    for (const QPointF &point : tempPoly) {
-        painter->drawEllipse(point, POINT_RADIUS, POINT_RADIUS);
-    }
-
-    if (creatingPolygon && tempPoly.size() > 1) {
-        painter->setPen(Qt::DashLine);
-        painter->drawLine(tempPoly.last(), tempPoly.first());
+        if (tempPoly.size() > 1) {
+            painter->setPen(Qt::DashLine);
+            painter->drawLine(tempPoly.last(), tempPoly.first());
+        }
     }
 }
 
