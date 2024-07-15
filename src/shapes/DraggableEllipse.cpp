@@ -104,14 +104,14 @@ bool DraggableEllipse::handleMouseMove(QMouseEvent *event) {
         QPointF delta = event->pos() - m_lastMousePos;
         setX(x() + delta.x());
         setY(y() + delta.y());
-        emit pointMoved(m_pointIndex, QPointF(x(), y()));
+        emit pointMoved(m_pointIndex, QPointF(x() + m_radius, y() + m_radius));
 
         // Explicitly map to the parent item, which is expected to be CustomScene
         if (scene()) {
-            QPointF scenePos = mapToItem(scene(), QPointF(x(), y()));
+            QPointF scenePos = mapToItem(scene(), QPointF(x() + m_radius, y() + m_radius));
             emit pointMovedInScene(m_pointIndex, scenePos);
         } else {
-            emit pointMovedInScene(m_pointIndex, QPointF(x(), y()));
+            emit pointMovedInScene(m_pointIndex, QPointF(x() + m_radius, y() + m_radius));
         }
 
         qDebug() << "DraggableEllipse::handleMouseMove - Moved to position:" << QPointF(x(), y());
