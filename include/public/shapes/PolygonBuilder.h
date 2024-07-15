@@ -1,27 +1,27 @@
 #ifndef POLYGONBUILDER_H
 #define POLYGONBUILDER_H
 
-#include <QGraphicsRectItem>
 #include <QObject>
 #include <QPolygonF>
 #include <QList>
+#include "scene/SceneItem.h"
+#include "scene/CustomScene.h"
 
-class PolygonBuilder : public QObject, public QGraphicsRectItem {
+class PolygonBuilder : public SceneItem {
     Q_OBJECT
 
 public:
-    PolygonBuilder(QGraphicsScene *scene, QObject *parent = nullptr);
+    PolygonBuilder(QQuickItem *parent = nullptr);
 
 signals:
     void polygonCreated(QPolygonF newPolygon);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    void keyPressEvent(QKeyEvent *event) override;
+    bool handleMousePress(QMouseEvent *event) override;
+    void paintFigure(QPainter *painter) override;
 
 private:
-    QGraphicsScene *scene;
+    CustomScene *scene;
     QPolygonF tempPoly;
     bool creatingPolygon;
 };

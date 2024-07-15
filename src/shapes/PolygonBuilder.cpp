@@ -6,40 +6,36 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+#include "scene/CustomScene.h"
+
 static const qreal POINT_RADIUS = 5;
 
-PolygonBuilder::PolygonBuilder(QGraphicsScene *scene, QObject *parent)
-    : QObject(parent), QGraphicsRectItem(), scene(scene), creatingPolygon(false) {
-    setRect(scene->sceneRect());
-    setFlag(QGraphicsItem::ItemIsSelectable, false);
-    setFlag(QGraphicsItem::ItemIsMovable, false);
-    setFlag(QGraphicsItem::ItemIsFocusable, true);
-    setAcceptHoverEvents(true);
-    setAcceptedMouseButtons(Qt::LeftButton);
+PolygonBuilder::PolygonBuilder(QQuickItem *parent) :
+    SceneItem(parent)
+{
 }
 
-void PolygonBuilder::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+bool PolygonBuilder::handleMousePress(QMouseEvent *event) {
     QPointF clickPos = event->pos();
 
     if (!creatingPolygon) {
         creatingPolygon = true;
-        tempPoly.clear();
         tempPoly << clickPos;
     } else {
         if (!tempPoly.isEmpty() && QLineF(clickPos, tempPoly.first()).length() < POINT_RADIUS) {
             emit polygonCreated(tempPoly);
             creatingPolygon = false;
+            tempPoly.clear();
+            this->deleteLater();
         } else {
             tempPoly << clickPos;
         }
     }
     update();
+    return true;
 }
 
-void PolygonBuilder::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
+void PolygonBuilder::paintFigure(QPainter *painter) {
     painter->setPen(Qt::black);
     painter->setBrush(Qt::NoBrush);
     if (creatingPolygon)
@@ -55,14 +51,4 @@ void PolygonBuilder::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             painter->drawLine(tempPoly.last(), tempPoly.first());
         }
     }
-}
-
-void PolygonBuilder::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Escape && creatingPolygon) {
-        qDebug() << "Cancelling polygon creation";
-        creatingPolygon = false;
-        tempPoly.clear();
-        update();
-    }
-    QGraphicsRectItem::keyPressEvent(event);
 }

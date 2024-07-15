@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<CustomScene>("Shapes", 1, 0, "CustomScene");
     qmlRegisterType<DraggableEllipse>("Shapes", 1, 0, "DraggableEllipse");
     qmlRegisterType<PolygonItem>("Shapes", 1, 0, "PolygonItem");
+    qmlRegisterType<PolygonBuilder>("Shapes", 1, 0, "PolygonBuilder");
     
     engine.load(url);
 

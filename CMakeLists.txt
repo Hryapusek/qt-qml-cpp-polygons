@@ -86,5 +86,8 @@ target_sources(PolygonsMap
     include/public/geometry/Geometry.h
     src/geometry/Geometry.cpp
 
+    include/public/shapes/PolygonBuilder.h
+    src/shapes/PolygonBuilder.cpp
+
     src/main.cpp
 )

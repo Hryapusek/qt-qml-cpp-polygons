@@ -13,16 +13,9 @@ ApplicationWindow {
         width: parent.width
         height: parent.height
 
-        PolygonItem {
+        PolygonBuilder {
             id: ellipse
-            x: 100
-            y: 100
             scene: customScene
-            polygon: [
-                Qt.point(50, 50),
-                Qt.point(100, 50),
-                Qt.point(75, 100)
-            ]
         }
     }
 }
