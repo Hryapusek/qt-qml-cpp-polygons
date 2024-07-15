@@ -3,9 +3,10 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QDebug>
+#include <cmath>
 
 DraggableEllipse::DraggableEllipse(qreal x, qreal y, qreal radius, int pointIndex, QQuickItem *parent)
-    : SceneItem(parent), m_pointIndex(pointIndex), m_radius(radius), m_scene(nullptr) {
+    : SceneItem(parent), m_pointIndex(pointIndex), m_radius(radius), movingPoint(false), m_scene(nullptr) {
     setX(x - radius);
     setY(y - radius);
     setWidth(radius * 2);
@@ -13,7 +14,7 @@ DraggableEllipse::DraggableEllipse(qreal x, qreal y, qreal radius, int pointInde
 }
 
 DraggableEllipse::DraggableEllipse(QQuickItem *parent)
-    : SceneItem(parent), m_pointIndex(0), m_radius(POINT_RADIUS), m_scene(nullptr) {
+    : SceneItem(parent), m_pointIndex(0), m_radius(POINT_RADIUS), movingPoint(false), m_scene(nullptr) {
     setWidth(m_radius * 2);
     setHeight(m_radius * 2);
 }
@@ -61,26 +62,45 @@ void DraggableEllipse::setScene(CustomScene* scene) {
     }
 }
 
-void DraggableEllipse::paint(QPainter *painter) {
+void DraggableEllipse::paintFigure(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::red);
     painter->setPen(Qt::NoPen);
-    painter->drawEllipse(boundingRect());
-    qDebug() << "DraggableEllipse::paint - Drawing at position:" << QPointF(x(), y());
+    painter->drawEllipse(QPointF(x() + m_radius, y() + m_radius), m_radius, m_radius);
+    qDebug() << "DraggableEllipse::paint - Drawing at position:" << QPointF(x() + m_radius, y() + m_radius);
 }
 
 bool DraggableEllipse::handleMousePress(QMouseEvent *event) {
+    if (not containsPoint(event->pos()))
+        return false;
     if (event->button() == Qt::LeftButton) {
-        qDebug() << "DraggableEllipse::handleMousePress - Click registered at position:" << event->pos();
+        qDebug() << "Moving point START";
         m_lastMousePos = event->pos();
+        movingPoint = true;
         return true;
     }
     qDebug() << "DraggableEllipse::handleMousePress - Click not handled";
     return false;
 }
 
+bool DraggableEllipse::handleMouseRelease(QMouseEvent *event) {
+    if (movingPoint and event->button() == Qt::LeftButton)
+    {
+        qDebug() << "Moving point STOP";
+        movingPoint = false;
+        return true;
+    }
+    if (not containsPoint(event->pos()))
+        return false;
+    qDebug() << "DraggableEllipse::handleMouseRelease - Click not handled";
+    return false;
+}
+
 bool DraggableEllipse::handleMouseMove(QMouseEvent *event) {
-    if (event->buttons() & Qt::LeftButton) {
+    if (not movingPoint and not containsPoint(event->pos()))
+        return false;
+    if (movingPoint and event->buttons() & Qt::LeftButton) {
+        movingPoint = true;
         QPointF delta = event->pos() - m_lastMousePos;
         setX(x() + delta.x());
         setY(y() + delta.y());
@@ -102,4 +122,14 @@ bool DraggableEllipse::handleMouseMove(QMouseEvent *event) {
     }
     qDebug() << "DraggableEllipse::handleMouseMove - Move not handled";
     return false;
+}
+
+bool DraggableEllipse::containsPoint(const QPointF &point)
+{
+    qDebug() << "Checking if point is in radius " << m_radius;
+    qreal x0 = x() + m_radius;
+    qreal y0 = y() + m_radius;
+    auto distance = (point.x() - x0)*(point.x() - x0) + (point.y() - y0)*(point.y() - y0);
+    qDebug() << "Distance is " << distance;
+    return distance <= m_radius*m_radius;
 }

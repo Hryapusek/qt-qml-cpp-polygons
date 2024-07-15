@@ -67,7 +67,7 @@ void CustomScene::paint(QPainter *painter) {
     });
 
     for (SceneItem *item : qAsConst(m_items)) {
-        item->paint(painter);
+        item->paintFigure(painter);
     }
 }
 
@@ -80,6 +80,24 @@ void CustomScene::mousePressEvent(QMouseEvent *event) {
 
     for (SceneItem *item : m_items) {
         if (item->handleMousePress(event)) {
+            qDebug() << "CustomScene::mousePressEvent - Event handled by item:" << item;
+            break;  // Stop processing if the event was handled
+        }
+        qDebug() << "CustomScene::mousePressEvent - Event not handled by item:" << item;
+    }
+    update();
+}
+
+void CustomScene::mouseReleaseEvent(QMouseEvent * event)
+{
+    qDebug() << "CustomScene::mousePressEvent - Click registered at position:" << event->pos();
+
+    std::sort(m_items.begin(), m_items.end(), [](const QPointer<SceneItem> &a, const QPointer<SceneItem> &b) {
+        return a->zOrder() > b->zOrder();
+    });
+
+    for (SceneItem *item : m_items) {
+        if (item->handleMouseRelease(event)) {
             qDebug() << "CustomScene::mousePressEvent - Event handled by item:" << item;
             break;  // Stop processing if the event was handled
         }

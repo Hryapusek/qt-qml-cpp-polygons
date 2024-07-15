@@ -29,6 +29,8 @@ public:
     CustomScene* scene() const;
     void setScene(CustomScene* scene);
 
+    void paintFigure(QPainter *painter) override;
+
 signals:
     void xChanged();
     void yChanged();
@@ -39,15 +41,19 @@ signals:
     void pointMovedInScene(int pointIndex, QPointF newPos);
 
 protected:
-    void paint(QPainter *painter) override;
+    void paint(QPainter *painter) override {};
     bool handleMousePress(QMouseEvent *event) override;
+    bool handleMouseRelease(QMouseEvent *event) override;
     bool handleMouseMove(QMouseEvent *event) override;
 
 private:
     int m_pointIndex;
     qreal m_radius;
     QPointF m_lastMousePos;
+    bool movingPoint;
     CustomScene* m_scene;
+
+    bool containsPoint(const QPointF &point);
 };
 
 #endif // DRAGGABLEELLIPSE_H

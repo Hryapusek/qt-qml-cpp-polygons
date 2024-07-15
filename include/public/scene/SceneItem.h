@@ -21,6 +21,8 @@ public:
     CustomScene* scene() const;
     void setScene(CustomScene *scene);
 
+    virtual void paintFigure(QPainter *) {};
+
 signals:
     void zOrderChanged();
     void zOrderLiftUpOne(SceneItem *item);
@@ -29,8 +31,9 @@ signals:
     void zOrderPutOnBottom(SceneItem *item);
 
 public:
-    virtual bool handleMousePress(QMouseEvent *event) = 0;
-    virtual bool handleMouseMove(QMouseEvent *event) = 0;
+    virtual bool handleMousePress(QMouseEvent *event) { return false; };
+    virtual bool handleMouseRelease(QMouseEvent *event)  { return false; };
+    virtual bool handleMouseMove(QMouseEvent *event)  { return false; };
 
 private:
     int m_zOrder;
