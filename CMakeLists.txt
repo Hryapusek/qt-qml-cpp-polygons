@@ -83,5 +83,8 @@ target_sources(PolygonsMap
     include/public/scene/SceneItem.h
     src/scene/SceneItem.cpp
 
+    include/public/geometry/Geometry.h
+    src/geometry/Geometry.cpp
+
     src/main.cpp
 )

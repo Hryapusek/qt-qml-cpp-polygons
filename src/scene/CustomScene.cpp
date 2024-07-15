@@ -22,30 +22,30 @@ void CustomScene::addItem(SceneItem *item) {
         // Connect z-order signals
         connect(item, &SceneItem::zOrderLiftUpOne, this, [this](SceneItem *item) {
             int index = m_items.indexOf(item);
-            if (index >= 0 and index < m_items.size() - 1) {
-                m_items.swapItemsAt(index + 1, index);
-                item->m_zOrder += 1;
-                update();
-            }
-        });
-        connect(item, &SceneItem::zOrderPutOnTop, this, [this](SceneItem *item) {
-            m_items.removeOne(item);
-            m_items.append(item);
-            item->m_zOrder = m_items.size() - 1;
-            update();
-        });
-        connect(item, &SceneItem::zOrderLowerDownOne, this, [this](SceneItem *item) {
-            int index = m_items.indexOf(item);
             if (index > 0) {
                 m_items.swapItemsAt(index - 1, index);
                 item->m_zOrder -= 1;
                 update();
             }
         });
-        connect(item, &SceneItem::zOrderPutOnBottom, this, [this](SceneItem *item) {
+        connect(item, &SceneItem::zOrderPutOnTop, this, [this](SceneItem *item) {
             m_items.removeOne(item);
             m_items.prepend(item);
             item->m_zOrder = 0;
+            update();
+        });
+        connect(item, &SceneItem::zOrderLowerDownOne, this, [this](SceneItem *item) {
+            int index = m_items.indexOf(item);
+            if (index < m_items.size() - 1) {
+                m_items.swapItemsAt(index, index + 1);
+                item->m_zOrder += 1;
+                update();
+            }
+        });
+        connect(item, &SceneItem::zOrderPutOnBottom, this, [this](SceneItem *item) {
+            m_items.removeOne(item);
+            m_items.append(item);
+            item->m_zOrder = m_items.size() - 1;
             update();
         });
 
@@ -112,7 +112,7 @@ void CustomScene::mouseReleaseEvent(QMouseEvent * event)
 }
 
 void CustomScene::mouseMoveEvent(QMouseEvent *event) {
-    qDebug() << "CustomScene::mouseMoveEvent - Move registered at position:" << event->pos();
+    qDebug() << "CustomScene::mouseMoveEvent - Move registered at position:" << event->pos(); 
     for (SceneItem *item : qAsConst(m_items)) {
         if (item->handleMouseMove(event)) {
             qDebug() << "CustomScene::mouseMoveEvent - Event handled by item:" << item;

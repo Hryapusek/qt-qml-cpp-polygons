@@ -18,6 +18,8 @@ public:
     SceneItem(QQuickItem *parent = nullptr);
     SceneItem(CustomScene *scene = nullptr);
 
+    virtual ~SceneItem();
+
     int zOrder() const;
     void setZOrder(int zOrder);
 

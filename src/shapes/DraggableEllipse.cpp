@@ -55,6 +55,14 @@ void DraggableEllipse::paintFigure(QPainter *painter) {
     qDebug() << "DraggableEllipse::paint - Drawing at position:" << QPointF(x() + m_radius, y() + m_radius);
 }
 
+
+void DraggableEllipse::move(qreal dx, qreal dy)
+{
+    setX(x() + dx);
+    setY(y() + dy);
+    update();
+}
+
 bool DraggableEllipse::handleMousePress(QMouseEvent *event) {
     if (not containsPoint(event->pos()))
         return false;

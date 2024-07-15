@@ -13,6 +13,7 @@ class PolygonItem : public SceneItem {
 
 public:
     const qreal POINT_RADIUS = 5.0;
+    const qreal ACTIVATE_LINE_DISTANCE = 2.0;
 
     PolygonItem(QQuickItem *parent = nullptr);
 
@@ -37,13 +38,15 @@ public slots:
 protected:
     bool handleMousePress(QMouseEvent *event) override;
     bool handleMouseMove(QMouseEvent *event) override;
+    void moveToNewPosition(QPointF newPos);
 
 private:
     void createDraggablePoints();
     void updateDraggablePoint(int index, QPointF newPos);
     QList<QPointF> m_points;
     QPolygonF m_polygon;
-    int m_selectedPointIndex;
+    QPointF m_oldPos;
+    int m_selectedLineIndex;
     QList<DraggableEllipse*> m_draggablePoints;
 };
 

@@ -11,6 +11,12 @@ SceneItem::SceneItem(CustomScene * scene)
     setScene(scene);
 }
 
+SceneItem::~SceneItem()
+{
+    if (not m_scene)
+        return;
+    m_scene->removeItem(this);
+}
 
 int SceneItem::zOrder() const {
     return m_zOrder;

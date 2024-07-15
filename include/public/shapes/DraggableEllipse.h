@@ -25,6 +25,8 @@ public:
 
     void paintFigure(QPainter *painter) override;
 
+    void move(qreal dx, qreal dy);
+
 signals:
     void xChanged();
     void yChanged();
