@@ -11,28 +11,47 @@ QPolygonF PolygonItem::polygon() const {
     return m_polygon;
 }
 
+QVector<QPointF> PolygonItem::polygonPoints() const
+{
+    return m_polygon.toList().toVector();
+}
+
 void PolygonItem::setPolygon(const QPolygonF &polygon) {
     if (m_polygon != polygon) {
         m_polygon = polygon;
         m_points = polygon.toList();
         createDraggablePoints();
         emit polygonChanged();
+        std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(), [](DraggableEllipse * el){ el->update(); });
         update();
     }
 }
 
+
+void PolygonItem::setPolygonFromVector(const QVector<QPointF>& polygon)
+{
+    setPolygon(QPolygonF(polygon));
+}
+
 void PolygonItem::createDraggablePoints() {
     // Clear any existing draggable points
-    qDeleteAll(m_draggablePoints);
+    std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(), [](DraggableEllipse * pointer) { pointer->deleteLater(); });
     m_draggablePoints.clear();
 
     // Create new draggable points
     for (int i = 0; i < m_points.size(); ++i) {
         QPointF point = m_points[i];
         DraggableEllipse *ellipse = new DraggableEllipse(point.x(), point.y(), POINT_RADIUS, i, this);
+        ellipse->setScene(scene());
         connect(ellipse, &DraggableEllipse::pointMoved, this, &PolygonItem::updatePolygonPoint);
         m_draggablePoints.append(ellipse);
     }
+}
+
+void PolygonItem::updateBothPoints(int index, QPointF newPos)
+{
+    updateDraggablePoint(index, newPos);
+    updatePolygonPoint(index, newPos);
 }
 
 void PolygonItem::updateDraggablePoint(int index, QPointF newPos) {
@@ -52,7 +71,7 @@ void PolygonItem::updatePolygonPoint(int index, QPointF newPos) {
     }
 }
 
-void PolygonItem::paint(QPainter *painter) {
+void PolygonItem::paintFigure(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Draw the polygon
@@ -60,10 +79,8 @@ void PolygonItem::paint(QPainter *painter) {
     painter->setBrush(Qt::transparent);
     painter->drawPolygon(m_polygon);
 
-    // Draw the points
-    painter->setBrush(Qt::red);
-    for (const QPointF &point : m_points) {
-        painter->drawEllipse(point, 5, 5);
+    for (auto draggablePoint : m_draggablePoints) {
+        draggablePoint->paintFigure(painter);
     }
 }
 

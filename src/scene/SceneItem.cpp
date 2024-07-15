@@ -5,6 +5,13 @@ SceneItem::SceneItem(QQuickItem *parent)
     : QQuickPaintedItem(parent), m_zOrder(0), m_scene(nullptr) {
 }
 
+
+SceneItem::SceneItem(CustomScene * scene)
+    : QQuickPaintedItem(scene), m_zOrder(0), m_scene(nullptr) {
+    setScene(scene);
+}
+
+
 int SceneItem::zOrder() const {
     return m_zOrder;
 }
@@ -21,10 +28,15 @@ CustomScene* SceneItem::scene() const {
     return m_scene;
 }
 
-void SceneItem::setScene(CustomScene *scene) {
+void SceneItem::setScene(CustomScene* scene) {
     if (m_scene != scene) {
+        if (m_scene) {
+            m_scene->removeItem(this);
+        }
         m_scene = scene;
-        setParentItem(scene);
-        update();
+        if (m_scene) {
+            m_scene->addItem(this);
+        }
+        emit sceneChanged();
     }
 }

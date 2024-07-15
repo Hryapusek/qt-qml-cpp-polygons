@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     // Register C++ classes with QML
     qmlRegisterType<CustomScene>("Shapes", 1, 0, "CustomScene");
     qmlRegisterType<DraggableEllipse>("Shapes", 1, 0, "DraggableEllipse");
+    qmlRegisterType<PolygonItem>("Shapes", 1, 0, "PolygonItem");
     
     engine.load(url);
 

@@ -11,19 +11,24 @@ class CustomScene;  // Forward declaration
 class SceneItem : public QQuickPaintedItem {
     Q_OBJECT
     Q_PROPERTY(int zOrder READ zOrder WRITE setZOrder NOTIFY zOrderChanged)
+    Q_PROPERTY(CustomScene* scene READ scene WRITE setScene NOTIFY sceneChanged)
 
+    friend class CustomScene;
 public:
     SceneItem(QQuickItem *parent = nullptr);
+    SceneItem(CustomScene *scene = nullptr);
 
     int zOrder() const;
     void setZOrder(int zOrder);
 
-    CustomScene* scene() const;
-    void setScene(CustomScene *scene);
+    virtual CustomScene* scene() const;
+    virtual void setScene(CustomScene *scene);
 
     virtual void paintFigure(QPainter *) {};
+    virtual void paint(QPainter *) final {};
 
 signals:
+    void sceneChanged();
     void zOrderChanged();
     void zOrderLiftUpOne(SceneItem *item);
     void zOrderPutOnTop(SceneItem *item);
@@ -35,9 +40,10 @@ public:
     virtual bool handleMouseRelease(QMouseEvent *event)  { return false; };
     virtual bool handleMouseMove(QMouseEvent *event)  { return false; };
 
-private:
-    int m_zOrder;
+protected:
     CustomScene *m_scene;
+    int m_zOrder;
+
 };
 
 #endif // SCENEITEM_H

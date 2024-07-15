@@ -6,7 +6,8 @@
 #include <cmath>
 
 DraggableEllipse::DraggableEllipse(qreal x, qreal y, qreal radius, int pointIndex, QQuickItem *parent)
-    : SceneItem(parent), m_pointIndex(pointIndex), m_radius(radius), movingPoint(false), m_scene(nullptr) {
+    : SceneItem(parent), m_pointIndex(pointIndex), m_radius(radius), movingPoint(false) {
+    m_scene = nullptr;
     setX(x - radius);
     setY(y - radius);
     setWidth(radius * 2);
@@ -14,7 +15,8 @@ DraggableEllipse::DraggableEllipse(qreal x, qreal y, qreal radius, int pointInde
 }
 
 DraggableEllipse::DraggableEllipse(QQuickItem *parent)
-    : SceneItem(parent), m_pointIndex(0), m_radius(POINT_RADIUS), movingPoint(false), m_scene(nullptr) {
+    : SceneItem(parent), m_pointIndex(0), m_radius(2), movingPoint(false) {
+    m_scene = nullptr;
     setWidth(m_radius * 2);
     setHeight(m_radius * 2);
 }
@@ -42,23 +44,6 @@ void DraggableEllipse::setPointIndex(int index) {
         m_pointIndex = index;
         emit pointIndexChanged();
         update();
-    }
-}
-
-CustomScene* DraggableEllipse::scene() const {
-    return m_scene;
-}
-
-void DraggableEllipse::setScene(CustomScene* scene) {
-    if (m_scene != scene) {
-        if (m_scene) {
-            m_scene->removeItem(this);
-        }
-        m_scene = scene;
-        if (m_scene) {
-            m_scene->addItem(this);
-        }
-        emit sceneChanged();
     }
 }
 

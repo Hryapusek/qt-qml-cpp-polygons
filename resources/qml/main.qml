@@ -13,13 +13,16 @@ ApplicationWindow {
         width: parent.width
         height: parent.height
 
-        DraggableEllipse {
+        PolygonItem {
             id: ellipse
             x: 100
             y: 100
-            radius: 10
-            pointIndex: 0
             scene: customScene
+            polygon: [
+                Qt.point(50, 50),
+                Qt.point(100, 50),
+                Qt.point(75, 100)
+            ]
         }
     }
 }
