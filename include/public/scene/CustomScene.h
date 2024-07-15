@@ -11,6 +11,7 @@ class CustomScene : public QQuickPaintedItem {
 
 public:
     CustomScene(QQuickItem *parent = nullptr);
+    virtual ~CustomScene();
 
     void addItem(SceneItem *item);
     void removeItem(SceneItem *item);

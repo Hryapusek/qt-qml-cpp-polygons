@@ -12,6 +12,16 @@ CustomScene::CustomScene(QQuickItem *parent)
     setFlag(ItemHasContents, true);
 }
 
+
+CustomScene::~CustomScene()
+{
+    while (not m_items.empty())
+    {
+        auto item = m_items.last();
+        removeItem(item);
+    }
+}
+
 void CustomScene::addItem(SceneItem *item) {
     if (!m_items.contains(item)) {
         m_items.append(item);
@@ -56,6 +66,7 @@ void CustomScene::addItem(SceneItem *item) {
 void CustomScene::removeItem(SceneItem *item) {
     if (m_items.removeOne(item)) {
         item->setScene(nullptr);
+        item->deleteLater();
         qDebug() << "Item removed from CustomScene:" << item;
         update();
     }
