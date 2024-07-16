@@ -1,11 +1,15 @@
 #ifndef POLYGONITEM_H
 #define POLYGONITEM_H
 
+#include "json/Serialization.h"
 #include "scene/SceneItem.h"
 #include "shapes/DraggableEllipse.h"
+
 #include <QPolygonF>
 #include <QList>
 #include <QPointF>
+
+#include <memory>
 
 class PolygonItem : public SceneItem {
     Q_OBJECT
@@ -49,5 +53,13 @@ private:
     int m_selectedLineIndex;
     QList<DraggableEllipse*> m_draggablePoints;
 };
+
+
+namespace json
+{
+	Json::Value toJson(const PolygonItem &item);
+
+    std::unique_ptr<PolygonItem> fromJson(const Json::Value &value);
+}
 
 #endif // POLYGONITEM_H

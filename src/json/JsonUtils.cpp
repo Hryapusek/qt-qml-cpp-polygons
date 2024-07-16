@@ -1,29 +1,44 @@
 #include "json/JsonUtils.h"
 #include "shapes/PolygonItem.h"
 
-namespace
+namespace json
 {
-    template < class Iterator_t >
-    std::vector<PolygonItem *> filterPolygons(Iterator_t begin, Iterator_t end)
+    std::unique_ptr<JsonUtils> JsonUtils::m_instance;
+    std::mutex JsonUtils::m_mutex;
+
+    Json::Value JsonUtils::toJson(std::vector<const PolygonItem *> polygonsPointers)
     {
-        std::vector<PolygonItem *> polygonsPointers;
-        for (auto it = begin; it != end; it++)
+        Json::Value value;
+        value["polygons"] = Json::Value(Json::arrayValue);
+        auto &polygonsJson = value["polygons"];
+        for (auto polygonPtr : polygonsPointers)
         {
-            PolygonItem *polygonPtr = nullptr;
-            if (not (polygonPtr = dynamic_cast<PolygonItem *>(*it)))
-            {
-                continue;
-            }
-            polygonsPointers.push_back(polygonPtr);
+            polygonsJson.append(json::toJson(*polygonPtr));
+        }
+        return value;
+    }
+
+    std::vector<std::unique_ptr<PolygonItem>> json::JsonUtils::fromJson(const Json::Value &value)
+    {
+        std::vector<std::unique_ptr<PolygonItem>> polygonsPointers;
+        auto &polygonsJson = value["polygons"];
+        for (const auto &value : polygonsJson)
+        {
+            polygonsPointers.push_back(json::fromJson(value));
         }
         return polygonsPointers;
     }
-}
 
-namespace json
-{
-    Json::Value JsonUtils::serializePolygons(CustomScene * scene)
+    JsonUtils *json::JsonUtils::instance()
     {
-        std::vector<PolygonItem *> polygonsPointers = filterPolygons(scene->getItems().begin(), scene->getItems().end());
+        if (not m_instance)
+        {
+            std::unique_lock lock(m_mutex);
+            if (not m_instance)
+            {
+                m_instance = std::make_unique<JsonUtils>();
+            }
+        }
+        return m_instance.get();
     }
 }

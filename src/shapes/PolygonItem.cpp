@@ -148,11 +148,8 @@ void PolygonItem::moveToNewPosition(QPointF newPos)
 	update();
 }
 
-#include "json/Serialization.h"
-
 namespace json
 {
-	template<>
 	Json::Value toJson(const PolygonItem &item)
 	{
 		Json::Value value;
@@ -169,4 +166,19 @@ namespace json
 		}
 		return value;
 	}
+
+    std::unique_ptr<PolygonItem> fromJson(const Json::Value &value)
+    {
+        auto item = std::make_unique<PolygonItem>();
+		item->setX(value["x"].asDouble());
+		item->setX(value["y"].asDouble());
+		auto &pointsJson = value["points"];
+		QPolygonF polygon;
+		for (const auto &pointJson : pointsJson)
+		{
+			polygon.append(QPointF(pointJson["x"].asDouble(), pointJson["y"].asDouble()));
+		}
+		item->setPolygon(polygon);
+		return item;
+    }
 }
