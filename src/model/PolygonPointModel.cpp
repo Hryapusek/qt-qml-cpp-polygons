@@ -24,19 +24,37 @@ int PolygonPointModel::columnCount(const QModelIndex &parent) const {
     return 2; // x and y coordinates
 }
 
-QVariant PolygonPointModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || role != Qt::DisplayRole) {
+QVariant PolygonPointModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if (section < 0 or section >= 2)
+        return QVariant();
+    if (orientation == Qt::Orientation::Vertical)
+        return QVariant();
+    switch (section)
+    {
+    case 0:
+        return tr("Широта");
+    
+    case 1:
+        return tr("Долгота");
+
+    default:
         return QVariant();
     }
+}
 
-    const QPointF &point = m_polygon.at(index.row());
-    if (index.column() == 0) {
-        return point.x();
-    } else if (index.column() == 1) {
-        return point.y();
-    }
-
+QVariant PolygonPointModel::data(const QModelIndex &index, int role) const {
+  if (!index.isValid() || role != Qt::DisplayRole) {
     return QVariant();
+  }
+
+  const QPointF &point = m_polygon.at(index.row());
+  if (index.column() == 0) {
+    return point.x();
+  } else if (index.column() == 1) {
+    return point.y();
+  }
+
+  return QVariant();
 }
 
 bool PolygonPointModel::setData(const QModelIndex &index, const QVariant &value, int role) {

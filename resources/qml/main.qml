@@ -23,6 +23,10 @@ ApplicationWindow {
                           }
     }
 
+    property PolygonPointModel pointsModel: PolygonPointModel {
+        id: pointModel
+    }
+
     RowLayout {
         id: mainLayout
         anchors.fill: parent
@@ -31,6 +35,10 @@ ApplicationWindow {
             id: customScene
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width - sidePanel.width
+            onItemAdded: (item) => {
+                             pointModel.connectPolygon(item)
+                             item.itemSelected(item)
+                         }
         }
 
         Rectangle {
@@ -52,6 +60,16 @@ ApplicationWindow {
                             customScene.releaseItem(builder)
                         }
                     }
+                }
+            }
+
+            Row {
+                TableView {
+                    id: tableView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    model: pointModel
+                    anchors.margins: 10
                 }
             }
 
