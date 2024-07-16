@@ -9,6 +9,9 @@
 #include <QGraphicsView>
 #include <QTableView>
 #include <QSplitter>
+#include <QQmlContext>
+
+#include "helpers/OtherFunctions.h"
 
 #include "shapes/DraggableEllipse.h"
 #include "shapes/PolygonBuilder.h"
@@ -33,6 +36,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<PolygonItem>("Shapes", 1, 0, "PolygonItem");
     qmlRegisterType<PolygonBuilder>("Shapes", 1, 0, "PolygonBuilder");
     qmlRegisterType<PolygonPointModel>("Shapes", 1, 0, "PolygonPointModel");
+
+    auto otherFunctions = OtherFunctions::instance();
+    engine.rootContext()->setContextProperty("otherFunctions", otherFunctions);
     
     engine.load(toggleButtonUrl);
     engine.load(url);

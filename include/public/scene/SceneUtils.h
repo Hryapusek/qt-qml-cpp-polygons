@@ -9,13 +9,14 @@
 
 class SceneUtils
 {
+public:
     std::vector<const PolygonItem *> getOnlyPolygons(CustomScene *scene);
 
     static SceneUtils *instance();
 
-    private:
-        static std::unique_ptr<SceneUtils> m_instance;
-        static std::mutex m_mutex;
+private:
+    static std::unique_ptr<SceneUtils> m_instance;
+    static std::mutex m_mutex;
 };
 
 #endif

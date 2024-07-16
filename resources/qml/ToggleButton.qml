@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
+import QtQuick.Window 2.15
 import QtQuick.Controls.Styles 1.4
 
 Button {
@@ -15,7 +16,6 @@ Button {
     }
 
     style: ButtonStyle {
-        id: btnStyle
         background: Rectangle {
             border.width: isActive ? 3 : 1
             border.color: "white"
@@ -24,11 +24,12 @@ Button {
         }
 
         label: Text {
-            id: textLabel
             color: "white"
             text: buttonText
             font.bold: true
             font.pointSize: 14
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
 }

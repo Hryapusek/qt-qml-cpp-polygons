@@ -28,7 +28,7 @@ FetchContent_Declare(
 
 message(STATUS "Making jsoncpp available")
 FetchContent_MakeAvailable(jsoncpp)
-message(STATUS "jsoncpp added successfully")
+message(STATUS "Jsoncpp added successfully")
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -110,6 +110,9 @@ target_sources(PolygonsMap
 
     include/public/scene/SceneUtils.h
     src/scene/SceneUtils.cpp
+
+    include/public/helpers/OtherFunctions.h
+    src/helpers/OtherFunctions.cpp
 
     include/public/json/Serialization.h
 

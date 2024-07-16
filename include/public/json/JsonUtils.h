@@ -9,12 +9,14 @@
 
 namespace json
 {
-    class JsonUtils
+    class JsonUtils : public QObject
     {
-        Json::Value toJson(std::vector<const PolygonItem *> polygonsPointers);
-        std::vector<std::unique_ptr<PolygonItem>> fromJson(const Json::Value &value);
+        Q_OBJECT
+    public:
+        Q_INVOKABLE Json::Value toJson(std::vector<const PolygonItem *> polygonsPointers);
+        Q_INVOKABLE std::vector<std::unique_ptr<PolygonItem>> fromJson(const Json::Value &value);
 
-        static JsonUtils *instance();
+        [[ nodiscard ]] static JsonUtils *instance();
 
     private:
         static std::unique_ptr<JsonUtils> m_instance;
