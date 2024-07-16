@@ -52,7 +52,6 @@ void DraggableEllipse::paintFigure(QPainter *painter) {
     painter->setBrush(Qt::red);
     painter->setPen(Qt::NoPen);
     painter->drawEllipse(QPointF(x() + m_radius, y() + m_radius), m_radius, m_radius);
-    qDebug() << "DraggableEllipse::paint - Drawing at position:" << QPointF(x() + m_radius, y() + m_radius);
 }
 
 

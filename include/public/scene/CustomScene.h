@@ -15,15 +15,20 @@ public:
 
     Q_INVOKABLE void addItem(SceneItem *item);
     Q_INVOKABLE void removeItem(SceneItem *item);
+    Q_INVOKABLE void releaseItem(SceneItem *item);
+
+signals:
+    void itemAdded(SceneItem *item);
 
 protected:
     void paint(QPainter *painter) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void updateZOrders();
 
 private:
-    QList<QPointer<SceneItem>> m_items;
+    QList<SceneItem *> m_items;
 };
 
 #endif // CUSTOMSCENE_H

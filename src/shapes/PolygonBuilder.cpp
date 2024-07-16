@@ -26,7 +26,7 @@ bool PolygonBuilder::handleMousePress(QMouseEvent *event) {
             emit polygonCreated(tempPoly);
             creatingPolygon = false;
             tempPoly.clear();
-            this->deleteLater();
+            SceneItem::scene()->releaseItem(this);
         } else {
             tempPoly << clickPos;
         }

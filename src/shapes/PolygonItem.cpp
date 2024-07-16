@@ -12,28 +12,29 @@ PolygonItem::PolygonItem(QQuickItem *parent)
 	: SceneItem(parent), m_selectedLineIndex(-1) {
 }
 
-QPolygonF PolygonItem::polygon() const {
-	return m_polygon;
-}
-
 QVector<QPointF> PolygonItem::polygonPoints() const
 {
 	return m_polygon.toList().toVector();
 }
 
+QPolygonF PolygonItem::polygon() const {
+	return m_polygon;
+}
+
 void PolygonItem::setPolygon(const QPolygonF &polygon) {
 	if (m_polygon != polygon) {
+		qDebug() << "Got new polygon " << polygon;
 		m_polygon = polygon;
 		m_points = polygon.toList();
 		createDraggablePoints();
 		emit polygonChanged();
-		std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(), [](DraggableEllipse * el){
+		std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(),
+		              [](DraggableEllipse *el) {
 			el->update();
 		});
 		update();
 	}
 }
-
 
 void PolygonItem::setPolygonFromVector(const QVector<QPointF>& polygon)
 {
@@ -52,10 +53,10 @@ void PolygonItem::createDraggablePoints() {
 		QPointF point = m_points[i];
 		DraggableEllipse *ellipse = new DraggableEllipse(point.x(), point.y(), POINT_RADIUS, i, this);
 		ellipse->setScene(scene());
-        ellipse->zOrderPutOnTop(ellipse);
+		ellipse->zOrderPutOnTop(ellipse);
 		connect(ellipse, &DraggableEllipse::pointMoved, this, &PolygonItem::updatePolygonPoint);
 		connect(ellipse, &DraggableEllipse::pointClicked, [this]() {
-			polygonSelected(polygon());
+			itemSelected(this);
 		});
 		m_draggablePoints.append(ellipse);
 	}
@@ -99,27 +100,30 @@ void PolygonItem::paintFigure(QPainter *painter) {
 
 bool PolygonItem::handleMousePress(QMouseEvent *event) {
 	QPointF clickPos = event->pos();
-	for (int i = 0; i < m_points.size() - 1; ++i) {
-		if (Geometry().shortestDistanceToSegment(clickPos, m_points[i], m_points[i+1]) < ACTIVATE_LINE_DISTANCE) {
-			m_selectedLineIndex = i;
+	if (event->buttons() & Qt::LeftButton)
+	{
+		for (int i = 0; i < m_points.size() - 1; ++i) {
+			if (Geometry().shortestDistanceToSegment(clickPos, m_points[i], m_points[i+1]) < ACTIVATE_LINE_DISTANCE) {
+				m_selectedLineIndex = i;
+				m_oldPos = clickPos;
+				itemSelected(this);
+				return true;
+			}
+		}
+		if (m_points.size() >= 2 and Geometry().shortestDistanceToSegment(clickPos, m_points.first(), m_points.last()) < ACTIVATE_LINE_DISTANCE) {
+			m_selectedLineIndex = m_points.size() - 1;
 			m_oldPos = clickPos;
-			polygonSelected(polygon());
+			itemSelected(this);
 			return true;
 		}
 	}
-    if (m_points.size() >= 2 and Geometry().shortestDistanceToSegment(clickPos, m_points.first(), m_points.last()) < ACTIVATE_LINE_DISTANCE) {
-        m_selectedLineIndex = m_points.size() - 1;
-        m_oldPos = clickPos;
-		polygonSelected(polygon());
-        return true;
-    }
 	m_selectedLineIndex = -1;
 	return false;
 }
 
 bool PolygonItem::handleMouseMove(QMouseEvent *event) {
-	if (m_selectedLineIndex >= 0 && m_selectedLineIndex < m_points.size()) {
-        moveToNewPosition(event->pos());
+	if (event->buttons() & Qt::LeftButton and m_selectedLineIndex >= 0 && m_selectedLineIndex < m_points.size()) {
+		moveToNewPosition(event->pos());
 		return true;
 	}
 	return false;
@@ -127,19 +131,19 @@ bool PolygonItem::handleMouseMove(QMouseEvent *event) {
 
 void PolygonItem::moveToNewPosition(QPointF newPos)
 {
-    auto oldPolygon = polygon();
-    QPolygonF newPolygon;
-    auto diff = newPos - m_oldPos;
-    std::transform(oldPolygon.begin(), oldPolygon.end(), std::back_inserter(newPolygon), [&newPos, this](QPointF point){
-        return point + newPos - m_oldPos;
-    });
+	auto oldPolygon = polygon();
+	QPolygonF newPolygon;
+	auto diff = newPos - m_oldPos;
+	std::transform(oldPolygon.begin(), oldPolygon.end(), std::back_inserter(newPolygon), [&newPos, this](QPointF point){
+		return point + newPos - m_oldPos;
+	});
 
-    m_oldPos = newPos;
-    m_polygon = newPolygon;
-    m_points = newPolygon.toList();
-    emit polygonChanged();
-    std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(), [&diff](DraggableEllipse * el){
-        el->move(diff.x(), diff.y());
-    });
-    update();
+	m_oldPos = newPos;
+	m_polygon = newPolygon;
+	m_points = newPolygon.toList();
+	emit polygonChanged();
+	std::for_each(m_draggablePoints.begin(), m_draggablePoints.end(), [&diff](DraggableEllipse * el){
+		el->move(diff.x(), diff.y());
+	});
+	update();
 }

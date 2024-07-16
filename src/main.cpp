@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<DraggableEllipse>("Shapes", 1, 0, "DraggableEllipse");
     qmlRegisterType<PolygonItem>("Shapes", 1, 0, "PolygonItem");
     qmlRegisterType<PolygonBuilder>("Shapes", 1, 0, "PolygonBuilder");
+    qmlRegisterType<PolygonPointModel>("Shapes", 1, 0, "PolygonPointModel");
     
     engine.load(toggleButtonUrl);
     engine.load(url);

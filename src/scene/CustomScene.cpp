@@ -28,38 +28,44 @@ void CustomScene::addItem(SceneItem *item) {
         item->setScene(this);
         qDebug() << "Item added to CustomScene:" << item;
 
-        item->m_zOrder = m_items.size() - 1;
         // Connect z-order signals
         connect(item, &SceneItem::zOrderLiftUpOne, this, [this](SceneItem *item) {
             int index = m_items.indexOf(item);
             if (index > 0) {
                 m_items.swapItemsAt(index - 1, index);
-                item->m_zOrder -= 1;
+                updateZOrders();
                 update();
             }
         });
         connect(item, &SceneItem::zOrderPutOnTop, this, [this](SceneItem *item) {
             m_items.removeOne(item);
             m_items.prepend(item);
-            item->m_zOrder = 0;
+            updateZOrders();
             update();
         });
         connect(item, &SceneItem::zOrderLowerDownOne, this, [this](SceneItem *item) {
             int index = m_items.indexOf(item);
             if (index < m_items.size() - 1) {
                 m_items.swapItemsAt(index, index + 1);
-                item->m_zOrder += 1;
+                updateZOrders();
                 update();
             }
         });
         connect(item, &SceneItem::zOrderPutOnBottom, this, [this](SceneItem *item) {
             m_items.removeOne(item);
             m_items.append(item);
-            item->m_zOrder = m_items.size() - 1;
+            updateZOrders();
             update();
         });
 
+        emit itemAdded(item);
         update();
+    }
+}
+
+void CustomScene::updateZOrders() {
+    for (int i = 0; i < m_items.size(); ++i) {
+        m_items[i]->m_zOrder = i;
     }
 }
 
@@ -72,15 +78,19 @@ void CustomScene::removeItem(SceneItem *item) {
     }
 }
 
+Q_INVOKABLE void CustomScene::releaseItem(SceneItem *item)
+{
+    m_items.removeOne(item);
+    item->setScene(nullptr);
+    qDebug() << "Item released from CustomScene:" << item;
+    update();
+}
+
 void CustomScene::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Set background color
     painter->fillRect(boundingRect(), Qt::lightGray);
-
-    std::sort(m_items.begin(), m_items.end(), [](const QPointer<SceneItem> &a, const QPointer<SceneItem> &b) {
-        return a->zOrder() < b->zOrder();
-    });
 
     for (SceneItem *item : qAsConst(m_items)) {
         item->paintFigure(painter);
@@ -89,10 +99,6 @@ void CustomScene::paint(QPainter *painter) {
 
 void CustomScene::mousePressEvent(QMouseEvent *event) {
     qDebug() << "CustomScene::mousePressEvent - Click registered at position:" << event->pos() << " Elemnts count: " << m_items.size();
-
-    std::sort(m_items.begin(), m_items.end(), [](const QPointer<SceneItem> &a, const QPointer<SceneItem> &b) {
-        return a->zOrder() > b->zOrder();
-    });
 
     for (SceneItem *item : m_items) {
         if (item->handleMousePress(event)) {
@@ -107,10 +113,6 @@ void CustomScene::mousePressEvent(QMouseEvent *event) {
 void CustomScene::mouseReleaseEvent(QMouseEvent * event)
 {
     qDebug() << "CustomScene::mouseReleaseEvent - Click registered at position:" << event->pos();
-
-    std::sort(m_items.begin(), m_items.end(), [](const QPointer<SceneItem> &a, const QPointer<SceneItem> &b) {
-        return a->zOrder() > b->zOrder();
-    });
 
     for (SceneItem *item : m_items) {
         if (item->handleMouseRelease(event)) {

@@ -7,8 +7,11 @@ Button {
     property bool isActive: false
     property string buttonText: ""
 
+    signal toggled(isActibe: bool)
+
     onClicked: {
         isActive = !isActive;
+        toggled(isActive)
     }
 
     style: ButtonStyle {

@@ -3,6 +3,7 @@
 
 #include <QAbstractTableModel>
 #include <QPolygonF>
+#include "shapes/PolygonItem.h"
 
 class PolygonPointModel : public QAbstractTableModel {
     Q_OBJECT
@@ -20,7 +21,9 @@ public:
 
 public slots:
     void setPolygon(const QPolygonF &polygon);
+    void selectPolygonItem(PolygonItem *connectedItem);
     void updatePoint(int index, const QPointF &newPos);
+    void connectPolygon(SceneItem *item);
 
 signals:
     void polygonUpdated(const QPolygonF &polygon);
@@ -28,6 +31,7 @@ signals:
 
 private:
     QPolygonF m_polygon;
+    PolygonItem *m_selectedPolygon;
 };
 
 #endif // POLYGONPOINTMODEL_H

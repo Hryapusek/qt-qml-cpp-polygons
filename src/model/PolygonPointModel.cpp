@@ -79,3 +79,25 @@ void PolygonPointModel::updatePoint(int index, const QPointF &newPos) {
         emit dataChanged(modelIndex, modelIndex.sibling(index, 1));
     }
 }
+
+void PolygonPointModel::selectPolygonItem(PolygonItem * connectedItem) {
+    if (m_selectedPolygon)
+    {
+        QObject::disconnect(this, &PolygonPointModel::updatePoint, m_selectedPolygon, &PolygonItem::updateBothPoints);
+        QObject::disconnect(m_selectedPolygon, &PolygonItem::polygonMoved, this, &PolygonPointModel::setPolygon);
+    }
+    m_selectedPolygon = connectedItem;
+    setPolygon(connectedItem->polygon());
+    QObject::connect(this, &PolygonPointModel::updatePoint, m_selectedPolygon, &PolygonItem::updateBothPoints);
+    QObject::connect(m_selectedPolygon, &PolygonItem::polygonMoved, this, &PolygonPointModel::setPolygon);
+}
+
+
+void PolygonPointModel::connectPolygon(SceneItem *item) {
+    PolygonItem *polygon = nullptr;
+    if (not (polygon = dynamic_cast<PolygonItem *>(item)))
+        return;
+    QObject::connect(polygon, &SceneItem::itemSelected, [this, polygon]() {
+        this->selectPolygonItem(polygon);
+    });
+}

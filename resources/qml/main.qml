@@ -9,6 +9,20 @@ ApplicationWindow {
     width: 800
     height: 600
 
+    property PolygonBuilder polygonBuilder: PolygonBuilder {
+        id: builder
+        onPolygonCreated: (polygon) => {
+                              // Add PolygonBuilder item to the scene
+                              var ellipse = Qt.createQmlObject('import QtQuick 2.15; import Shapes 1.0; PolygonItem { scene: customScene }', customScene);
+                              ellipse.polygon = polygon
+                              console.log(`Created object ${ellipse}`)
+                              customScene.addItem(ellipse)
+                              customScene.update()
+                              builderInstrument.isActive = false
+                              builderInstrument.update()
+                          }
+    }
+
     RowLayout {
         id: mainLayout
         anchors.fill: parent
@@ -28,16 +42,20 @@ ApplicationWindow {
                 ToggleButton {
                     id: builderInstrument
                     buttonText: qsTr("Полигон")
+                    onToggled: (isActive) => {
+                        if (isActive) {
+                            console.log("Enabling builder")
+                            customScene.addItem(builder)
+                        }
+                        else {
+                            console.log("Disabling builder")
+                            customScene.releaseItem(builder)
+                        }
+                    }
                 }
             }
 
             // You can add more UI components here for the side panel
         }
-    }
-
-    Component.onCompleted: {
-        // Add PolygonBuilder item to the scene
-        var ellipse = Qt.createQmlObject('import QtQuick 2.15; import Shapes 1.0; DraggableEllipse { x: 100; y: 100; radius: 50; pointIndex: 1 }', customScene);
-        customScene.addItem(ellipse);
     }
 }

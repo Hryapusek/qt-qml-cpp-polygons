@@ -31,11 +31,14 @@ public:
 
 signals:
     void sceneChanged();
+    
     void zOrderChanged();
     void zOrderLiftUpOne(SceneItem *item);
     void zOrderPutOnTop(SceneItem *item);
     void zOrderLowerDownOne(SceneItem *item);
     void zOrderPutOnBottom(SceneItem *item);
+
+    void itemSelected(SceneItem *item);
 
 public:
     virtual bool handleMousePress(QMouseEvent *event) { return false; };
