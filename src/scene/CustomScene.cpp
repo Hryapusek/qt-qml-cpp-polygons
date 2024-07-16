@@ -76,7 +76,7 @@ void CustomScene::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Set background color
-    painter->fillRect(boundingRect(), Qt::yellow);
+    painter->fillRect(boundingRect(), Qt::lightGray);
 
     std::sort(m_items.begin(), m_items.end(), [](const QPointer<SceneItem> &a, const QPointer<SceneItem> &b) {
         return a->zOrder() < b->zOrder();

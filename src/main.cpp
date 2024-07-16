@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    const QUrl toggleButtonUrl(QStringLiteral("qrc:/qml/ToggleButton.qml"));
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
 
     // Register C++ classes with QML
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<PolygonItem>("Shapes", 1, 0, "PolygonItem");
     qmlRegisterType<PolygonBuilder>("Shapes", 1, 0, "PolygonBuilder");
     
+    engine.load(toggleButtonUrl);
     engine.load(url);
 
     if (engine.rootObjects().isEmpty())

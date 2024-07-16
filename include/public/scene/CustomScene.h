@@ -13,8 +13,8 @@ public:
     CustomScene(QQuickItem *parent = nullptr);
     virtual ~CustomScene();
 
-    void addItem(SceneItem *item);
-    void removeItem(SceneItem *item);
+    Q_INVOKABLE void addItem(SceneItem *item);
+    Q_INVOKABLE void removeItem(SceneItem *item);
 
 protected:
     void paint(QPainter *painter) override;
