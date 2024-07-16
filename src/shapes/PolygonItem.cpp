@@ -8,6 +8,8 @@
 
 #include "geometry/Geometry.h"
 
+#include "scene/CustomScene.h"
+
 PolygonItem::PolygonItem(QQuickItem *parent)
 	: SceneItem(parent), m_selectedLineIndex(-1) {
 }
@@ -95,6 +97,15 @@ void PolygonItem::paintFigure(QPainter *painter) {
 
 	for (auto draggablePoint : m_draggablePoints) {
 		draggablePoint->paintFigure(painter);
+	}
+}
+
+void PolygonItem::setScene(CustomScene *scene)
+{
+	SceneItem::setScene(scene);
+	for (auto point : m_draggablePoints)
+	{
+		point->setScene(scene);
 	}
 }
 

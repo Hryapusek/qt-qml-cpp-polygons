@@ -9,6 +9,7 @@ CustomScene::CustomScene(QQuickItem *parent)
     : QQuickPaintedItem(parent) {
     qDebug() << "CustomScene initialized";
     setAcceptedMouseButtons(Qt::AllButtons); // Accept all mouse buttons
+    setAcceptHoverEvents(true);
     setFlag(ItemHasContents, true);
 }
 
@@ -24,7 +25,7 @@ CustomScene::~CustomScene()
 
 void CustomScene::addItem(SceneItem *item) {
     if (!m_items.contains(item)) {
-        m_items.append(item);
+        m_items.prepend(item);
         item->setScene(this);
         qDebug() << "Item added to CustomScene:" << item;
 
@@ -134,6 +135,18 @@ void CustomScene::mouseMoveEvent(QMouseEvent *event) {
     for (SceneItem *item : qAsConst(m_items)) {
         if (item->handleMouseMove(event)) {
             qDebug() << "CustomScene::mouseMoveEvent - Event handled by item:" << item;
+            break;  // Stop processing if the event was handled
+        }
+    }
+    update();
+}
+
+void CustomScene::hoverMoveEvent(QHoverEvent *event)
+{
+    qDebug() << "CustomScene::hoverMoveEvent - Hover registered at position:" << event->pos(); 
+    for (SceneItem *item : qAsConst(m_items)) {
+        if (item->handleHoverMoveEvent(event)) {
+            qDebug() << "CustomScene::hoverMoveEvent - Event handled by item:" << item;
             break;  // Stop processing if the event was handled
         }
     }

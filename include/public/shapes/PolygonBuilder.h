@@ -18,12 +18,14 @@ signals:
 
 protected:
     bool handleMousePress(QMouseEvent *event) override;
+    bool handleHoverMoveEvent(QHoverEvent *event) override;
     void paintFigure(QPainter *painter) override;
 
 private:
     CustomScene *scene;
     QPolygonF tempPoly;
     bool creatingPolygon;
+    QPointF currentMousePos;
 };
 
 #endif // POLYGONBUILDER_H

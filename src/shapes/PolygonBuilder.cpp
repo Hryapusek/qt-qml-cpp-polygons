@@ -15,6 +15,16 @@ PolygonBuilder::PolygonBuilder(QQuickItem *parent) :
 {
 }
 
+bool PolygonBuilder::handleHoverMoveEvent(QHoverEvent *event)
+{
+    if (creatingPolygon) {
+        currentMousePos = event->pos();
+        update();
+        return true;
+    }
+    return false;
+}
+
 bool PolygonBuilder::handleMousePress(QMouseEvent *event) {
     QPointF clickPos = event->pos();
 
@@ -49,6 +59,13 @@ void PolygonBuilder::paintFigure(QPainter *painter) {
         if (tempPoly.size() > 1) {
             painter->setPen(Qt::DashLine);
             painter->drawLine(tempPoly.last(), tempPoly.first());
+        }
+
+        painter->setPen(Qt::DashLine);
+        painter->drawEllipse(currentMousePos, POINT_RADIUS, POINT_RADIUS);
+        if (!tempPoly.isEmpty()) {
+            painter->drawLine(tempPoly.first(), currentMousePos);
+            painter->drawLine(tempPoly.last(), currentMousePos);
         }
     }
 }

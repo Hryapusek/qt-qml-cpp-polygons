@@ -26,6 +26,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void hoverMoveEvent(QHoverEvent *event) override;
     void updateZOrders();
 
 private:

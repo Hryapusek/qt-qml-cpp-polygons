@@ -27,6 +27,7 @@ public:
     void setPolygon(const QPolygonF &polygon);
     void setPolygonFromVector(const QVector<QPointF> &polygon);
     void paintFigure(QPainter *painter) override;
+    void setScene(CustomScene *scene) override;
 
 signals:
     void polygonChanged();

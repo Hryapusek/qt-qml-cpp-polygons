@@ -44,6 +44,7 @@ public:
     virtual bool handleMousePress(QMouseEvent *event) { return false; };
     virtual bool handleMouseRelease(QMouseEvent *event)  { return false; };
     virtual bool handleMouseMove(QMouseEvent *event)  { return false; };
+    virtual bool handleHoverMoveEvent(QHoverEvent *event)  { return false; };
 
 protected:
     CustomScene *m_scene;
