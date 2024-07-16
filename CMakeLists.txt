@@ -4,6 +4,8 @@ project(PolygonsMap VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_PREFIX_PATH "/home/hryapusek/lib/qtbuild")
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -13,6 +15,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Widgets REQUIRED)
+
+message(STATUS "Including FetchContent")
+include(FetchContent)
+
+message(STATUS "Loading jsoncpp")
+FetchContent_Declare(
+  jsoncpp
+  GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
+  GIT_TAG        master
+)
+
+message(STATUS "Making jsoncpp available")
+FetchContent_MakeAvailable(jsoncpp)
+message(STATUS "jsoncpp added successfully")
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -45,7 +61,7 @@ endif()
 target_compile_definitions(PolygonsMap
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(PolygonsMap
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets ${jsoncpp})
 
 set_target_properties(PolygonsMap PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
