@@ -70,6 +70,7 @@ bool DraggableEllipse::handleMousePress(QMouseEvent *event) {
         qDebug() << "Moving point START";
         m_lastMousePos = event->pos();
         movingPoint = true;
+        pointClicked(m_pointIndex);
         return true;
     }
     qDebug() << "DraggableEllipse::handleMousePress - Click not handled";

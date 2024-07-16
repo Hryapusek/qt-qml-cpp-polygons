@@ -54,6 +54,9 @@ void PolygonItem::createDraggablePoints() {
 		ellipse->setScene(scene());
         ellipse->zOrderPutOnTop(ellipse);
 		connect(ellipse, &DraggableEllipse::pointMoved, this, &PolygonItem::updatePolygonPoint);
+		connect(ellipse, &DraggableEllipse::pointClicked, [this]() {
+			polygonSelected(polygon());
+		});
 		m_draggablePoints.append(ellipse);
 	}
 }
@@ -100,12 +103,14 @@ bool PolygonItem::handleMousePress(QMouseEvent *event) {
 		if (Geometry().shortestDistanceToSegment(clickPos, m_points[i], m_points[i+1]) < ACTIVATE_LINE_DISTANCE) {
 			m_selectedLineIndex = i;
 			m_oldPos = clickPos;
+			polygonSelected(polygon());
 			return true;
 		}
 	}
     if (m_points.size() >= 2 and Geometry().shortestDistanceToSegment(clickPos, m_points.first(), m_points.last()) < ACTIVATE_LINE_DISTANCE) {
         m_selectedLineIndex = m_points.size() - 1;
         m_oldPos = clickPos;
+		polygonSelected(polygon());
         return true;
     }
 	m_selectedLineIndex = -1;

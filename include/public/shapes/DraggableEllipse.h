@@ -32,6 +32,7 @@ signals:
     void yChanged();
     void radiusChanged();
     void pointIndexChanged();
+    void pointClicked(int pointIndex);
     void pointMoved(int pointIndex, QPointF newPos);
     void pointMovedInScene(int pointIndex, QPointF newPos);
 
