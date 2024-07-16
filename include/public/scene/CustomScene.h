@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE void addItem(SceneItem *item);
     Q_INVOKABLE void removeItem(SceneItem *item);
     Q_INVOKABLE void releaseItem(SceneItem *item);
+    const QList<SceneItem *> &getItems() const;
 
 signals:
     void itemAdded(SceneItem *item);

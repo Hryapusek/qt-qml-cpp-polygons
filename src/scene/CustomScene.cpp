@@ -86,6 +86,11 @@ Q_INVOKABLE void CustomScene::releaseItem(SceneItem *item)
     update();
 }
 
+const QList<SceneItem *> &CustomScene::getItems() const
+{
+    return m_items;
+}
+
 void CustomScene::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 

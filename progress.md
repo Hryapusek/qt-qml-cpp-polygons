@@ -1,4 +1,5 @@
 ```python
-- Polygon Item Deletion using conntext menu
-- PolygonBuilder
+- Polygon Item Deletion using context menu
+- Json serialization
+- Point following cursor when building polygon
 ```

@@ -61,7 +61,7 @@ endif()
 target_compile_definitions(PolygonsMap
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(PolygonsMap
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets ${jsoncpp})
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets jsoncpp_lib)
 
 set_target_properties(PolygonsMap PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
@@ -104,6 +104,11 @@ target_sources(PolygonsMap
 
     include/public/shapes/PolygonBuilder.h
     src/shapes/PolygonBuilder.cpp
+
+    include/public/json/JsonUtils.h
+    src/json/JsonUtils.cpp
+
+    include/public/json/Serialization.h
 
     src/main.cpp
 )

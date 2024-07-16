@@ -47,7 +47,7 @@ QVariant PolygonPointModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   }
 
-  const QPointF &point = m_polygon.at(index.row());
+  const QPointF &point = m_polygon.at(index.row() - 1);
   if (index.column() == 0) {
     return point.x();
   } else if (index.column() == 1) {
@@ -78,7 +78,7 @@ bool PolygonPointModel::setData(const QModelIndex &index, const QVariant &value,
     }
 
     emit dataChanged(index, index);
-    emit pointUpdated(index.row(), point);
+    emit pointUpdated(index.row() - 1, point);
     return true;
 }
 

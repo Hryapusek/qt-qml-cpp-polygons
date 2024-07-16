@@ -147,3 +147,26 @@ void PolygonItem::moveToNewPosition(QPointF newPos)
 	});
 	update();
 }
+
+#include "json/Serialization.h"
+
+namespace json
+{
+	template<>
+	Json::Value toJson(const PolygonItem &item)
+	{
+		Json::Value value;
+		value["x"] = item.x();
+		value["y"] = item.y();
+		value["points"] = Json::Value(Json::arrayValue);
+		auto &pointsJson = value["points"];
+		for (auto point : item.polygon())
+		{
+			Json::Value pointJson;
+			pointJson["x"] = point.x();
+			pointJson["y"] = point.y();
+			pointsJson.append(pointJson);
+		}
+		return value;
+	}
+}
