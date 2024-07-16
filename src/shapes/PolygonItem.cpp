@@ -2,6 +2,10 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QQuickItem>
+#include <QCursor>
+#include <QMenu>
+#include <QApplication>
+#include <QStyle>
 
 #include <algorithm>
 #include <iterator>
@@ -111,7 +115,16 @@ void PolygonItem::setScene(CustomScene *scene)
 
 bool PolygonItem::handleMousePress(QMouseEvent *event) {
 	QPointF clickPos = event->pos();
-	if (event->buttons() & Qt::LeftButton)
+	if (event->button() == Qt::RightButton) {
+        m_contextMenuPos = clickPos;
+        QMenu contextMenu;
+        QAction *action = contextMenu.addAction(QApplication::style()->standardIcon(QStyle::SP_DialogCloseButton), "Delete");
+        connect(action, &QAction::triggered, [this]() {
+			this->deleteLater();
+		});
+        contextMenu.exec(QCursor::pos());
+        return true;
+    } else if (event->buttons() & Qt::LeftButton)
 	{
 		for (int i = 0; i < m_points.size() - 1; ++i) {
 			if (Geometry().shortestDistanceToSegment(clickPos, m_points[i], m_points[i+1]) < ACTIVATE_LINE_DISTANCE) {

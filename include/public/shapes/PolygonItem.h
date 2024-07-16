@@ -53,6 +53,7 @@ private:
     QPointF m_oldPos;
     int m_selectedLineIndex;
     QList<DraggableEllipse*> m_draggablePoints;
+    QPointF m_contextMenuPos;
 };
 
 
