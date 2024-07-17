@@ -19,6 +19,7 @@ signals:
 protected:
     bool handleMousePress(QMouseEvent *event) override;
     bool handleHoverMoveEvent(QHoverEvent *event) override;
+    bool handleMouseMove(QMouseEvent *event) override { return true; }
     void paintFigure(QPainter *painter) override;
 
 private:

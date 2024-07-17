@@ -143,10 +143,8 @@ void CustomScene::mouseMoveEvent(QMouseEvent *event) {
 
 void CustomScene::hoverMoveEvent(QHoverEvent *event)
 {
-    qDebug() << "CustomScene::hoverMoveEvent - Hover registered at position:" << event->pos(); 
     for (SceneItem *item : qAsConst(m_items)) {
         if (item->handleHoverMoveEvent(event)) {
-            qDebug() << "CustomScene::hoverMoveEvent - Event handled by item:" << item;
             break;  // Stop processing if the event was handled
         }
     }
